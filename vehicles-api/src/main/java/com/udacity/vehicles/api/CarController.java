@@ -63,6 +63,7 @@ class CarController {
          * TODO: Use the `assembler` on that car and return the resulting output.
          *   Update the first line as part of the above implementing.
          */
+        System.out.println(id);
         return assembler.toResource(new Car());
     }
 
@@ -71,15 +72,25 @@ class CarController {
      * @param car A new vehicle to add to the system.
      * @return response that the new vehicle was added to the system
      * @throws URISyntaxException if the request contains invalid fields or syntax
+     * sample request
+     * {
+     *     "condition": "NEW",
+     *     "details": {
+     *         "body": "sedan",
+     *         "model": "X305",
+     *         "manufacturer": {
+     *             "code": "100",
+     *             "name": "Audi"
+     *         }
+     *     }
+     * }
      */
     @PostMapping
     ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
-        /**
-         * TODO: Use the `save` method from the Car Service to save the input car.
-         * TODO: Use the `assembler` on that saved car and return as part of the response.
-         *   Update the first line as part of the above implementing.
-         */
-        Resource<Car> resource = assembler.toResource(new Car());
+        Car savedCar = carService.save(car);
+        System.out.println(savedCar);
+
+        Resource<Car> resource = assembler.toResource(savedCar);
         return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
     }
 
@@ -108,9 +119,8 @@ class CarController {
      */
     @DeleteMapping("/{id}")
     ResponseEntity<?> delete(@PathVariable Long id) {
-        /**
-         * TODO: Use the Car Service to delete the requested vehicle.
-         */
+        System.out.println("deleting id " + id.toString());
+        carService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
