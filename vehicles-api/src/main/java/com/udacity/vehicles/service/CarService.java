@@ -49,7 +49,9 @@ public class CarService {
          *   If it does not exist, throw a CarNotFoundException
          *   Remove the below code as part of your implementation.
          */
-        Car car = new Car();
+        Optional<Car> optionalCar = repository.findById(id);
+        if(!optionalCar.isPresent())
+            throw new CarNotFoundException();
 
         /**
          * TODO: Use the Pricing Web client you create in `VehiclesApiApplication`
@@ -70,7 +72,7 @@ public class CarService {
          */
 
 
-        return car;
+        return optionalCar.get();
     }
 
     /**
@@ -102,7 +104,7 @@ public class CarService {
         if (optional.isPresent()) {
             repository.delete(optional.get());
         } else {
-            throw new CarNotFoundException("Car not found, id: " + id);
+            throw new CarNotFoundException();
         }
     }
 }

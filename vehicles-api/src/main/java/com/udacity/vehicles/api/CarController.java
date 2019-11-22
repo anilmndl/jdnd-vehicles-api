@@ -6,6 +6,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.service.CarService;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -41,6 +42,7 @@ class CarController {
 
     /**
      * Creates a list to store any vehicles.
+     *
      * @return list of vehicles
      */
     @GetMapping
@@ -53,22 +55,19 @@ class CarController {
 
     /**
      * Gets information of a specific car by ID.
+     *
      * @param id the id number of the given vehicle
      * @return all information for the requested vehicle
      */
     @GetMapping("/{id}")
     Resource<Car> get(@PathVariable Long id) {
-        /**
-         * TODO: Use the `findById` method from the Car Service to get car information.
-         * TODO: Use the `assembler` on that car and return the resulting output.
-         *   Update the first line as part of the above implementing.
-         */
-        System.out.println(id);
-        return assembler.toResource(new Car());
+        Car car = carService.findById(id);
+        return assembler.toResource(car);
     }
 
     /**
      * Posts information to create a new vehicle in the system.
+     *
      * @param car A new vehicle to add to the system.
      * @return response that the new vehicle was added to the system
      * @throws URISyntaxException if the request contains invalid fields or syntax
@@ -88,8 +87,6 @@ class CarController {
     @PostMapping
     ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
         Car savedCar = carService.save(car);
-        System.out.println(savedCar);
-
         Resource<Car> resource = assembler.toResource(savedCar);
         return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
     }
@@ -114,12 +111,12 @@ class CarController {
 
     /**
      * Removes a vehicle from the system.
+     *
      * @param id The ID number of the vehicle to remove.
      * @return response that the related vehicle is no longer in the system
      */
     @DeleteMapping("/{id}")
     ResponseEntity<?> delete(@PathVariable Long id) {
-        System.out.println("deleting id " + id.toString());
         carService.delete(id);
         return ResponseEntity.noContent().build();
     }
