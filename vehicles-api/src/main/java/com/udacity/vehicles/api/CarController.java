@@ -96,16 +96,24 @@ class CarController {
      * @param id The ID number for which to update vehicle information.
      * @param car The updated information about the related vehicle.
      * @return response that the vehicle was updated in the system
+     * sample request
+     * {
+     *     "condition": "NEW",
+     *     "details": {
+     *         "body": "SUV",
+     *         "model": "X305U",
+     *         "manufacturer": {
+     *             "code": "101",
+     *             "name": "Chevrolet"
+     *         }
+     *     }
+     * }
      */
     @PutMapping("/{id}")
     ResponseEntity<?> put(@PathVariable Long id, @Valid @RequestBody Car car) {
-        /**
-         * TODO: Set the id of the input car object to the `id` input.
-         * TODO: Save the car using the `save` method from the Car service
-         * TODO: Use the `assembler` on that updated car and return as part of the response.
-         *   Update the first line as part of the above implementing.
-         */
-        Resource<Car> resource = assembler.toResource(new Car());
+        car.setId(id);
+        Car savedCar = carService.save(car);
+        Resource<Car> resource = assembler.toResource(savedCar);
         return ResponseEntity.ok(resource);
     }
 
