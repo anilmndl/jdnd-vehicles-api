@@ -88,6 +88,12 @@ class CarController {
     ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
         Car savedCar = carService.save(car);
         Resource<Car> resource = assembler.toResource(savedCar);
+
+        // not sure why but for some reason i had to save the car again
+        // after overwriting the value for condition value to persist.
+        savedCar.setCondition(car.getCondition());
+        carService.save(car);
+
         return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
     }
 
